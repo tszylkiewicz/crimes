@@ -1,0 +1,44 @@
+@(crimes: Seq[Crime], form: Form[CrimeForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+
+  @main("Crimes") {
+
+    <h1>Crimes</h1>
+
+    @* Flash shows updates to a page *@
+    @request.flash.data.map{ case (name, value) =>
+      <div>@name: @value</div>
+    }
+
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Description</th><th>City</th><th>Date</th>
+      </thead>
+      <tbody>
+      @for(w <- crimes) {
+        <tr><td>@w.category</td><td>@w.description</td><td>@w.city</td><td>@w.date</td></tr>
+      }
+      </tbody>
+    </table>
+
+    <hr/>
+
+    @* Global errors are not tied to any particular form field *@
+    @if(form.hasGlobalErrors) {
+      @form.globalErrors.map { error: FormError =>
+        <div>
+          @error.key: @error.message
+        </div>
+      }
+    }
+
+    @helper.form(postUrl) {
+      @helper.CSRF.formField
+
+      @helper.inputText(form("category"))
+      @helper.inputText(form("description"))
+      @helper.inputText(form("city"))
+      @helper.inputText(form("date"))
+
+      <button>Add crime</button>
+    }
+  }

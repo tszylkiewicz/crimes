@@ -1,0 +1,17 @@
+[0m[[0m[31merror[0m] [0m[0mD:\Repository\crimes\app\views\listCrimes.scala.html:18:20: value Category is not a member of models.Crime[0m
+[0m[[0m[31merror[0m] [0m[0mdid you mean category?[0m
+[0m[[0m[31merror[0m] [0m[0m        <tr><td>@w.Category</td><td>@w.Description</td><td>@w.City</td><td>@w.Date</td></tr>[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mD:\Repository\crimes\app\views\listCrimes.scala.html:18:40: value Description is not a member of models.Crime[0m
+[0m[[0m[31merror[0m] [0m[0mdid you mean description?[0m
+[0m[[0m[31merror[0m] [0m[0m        <tr><td>@w.Category</td><td>@w.Description</td><td>@w.City</td><td>@w.Date</td></tr>[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0mD:\Repository\crimes\app\views\listCrimes.scala.html:18:63: value City is not a member of models.Crime[0m
+[0m[[0m[31merror[0m] [0m[0mdid you mean city?[0m
+[0m[[0m[31merror[0m] [0m[0m        <tr><td>@w.Category</td><td>@w.Description</td><td>@w.City</td><td>@w.Date</td></tr>[0m
+[0m[[0m[31merror[0m] [0m[0m                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mD:\Repository\crimes\app\views\listCrimes.scala.html:18:79: value Date is not a member of models.Crime[0m
+[0m[[0m[31merror[0m] [0m[0mdid you mean date?[0m
+[0m[[0m[31merror[0m] [0m[0m        <tr><td>@w.Category</td><td>@w.Description</td><td>@w.City</td><td>@w.Date</td></tr>[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mfour errors found[0m
