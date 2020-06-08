@@ -1,17 +1,14 @@
 name := """crimes"""
 organization := "p.lodz.pl"
 
-version := "1.0-SNAPSHOT"
+version := "2.1-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.13.2"
 
-libraryDependencies += guice
+libraryDependencies ++= Seq(guice, evolutions, jdbc)
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
+libraryDependencies += "org.playframework.anorm" %% "anorm" % "2.6.5"
+libraryDependencies += "com.h2database" % "h2" % "1.4.199"
 
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "p.lodz.pl.controllers._"
-
-// Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "p.lodz.pl.binders._"

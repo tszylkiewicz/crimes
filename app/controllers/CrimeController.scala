@@ -1,64 +1,109 @@
 package controllers
 
 import javax.inject.Inject
-
-import models.Crime
+import models._
+import play.api.data.Forms._
 import play.api.data._
-import play.api.i18n._
 import play.api.mvc._
+import views._
+import play.api.data.format.Formats._
 
-import scala.collection._
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
- * The classic WidgetController using MessagesAbstractController.
- *
- * Instead of MessagesAbstractController, you can use the I18nSupport trait,
- * which provides implicits that create a Messages instance from a request
- * using implicit conversion.
- *
- * See https://www.playframework.com/documentation/2.8.x/ScalaForms#passing-messagesprovider-to-form-helpers
- * for details.
- */
-class CrimeController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
-  import CrimeForm._
+  * Manage a database of computers
+  */
+class CrimeController @Inject()(crimeService: CrimeRepository,
+                               categoryService: CategoryRepository,
+                               cc: MessagesControllerComponents)(implicit ec: ExecutionContext)
+  extends MessagesAbstractController(cc) {
 
-  private val crimes = mutable.ArrayBuffer(
-    Crime("burglary", "BURGLARY,STORE UNDER CONSTRUCTION, FORCIBLE ENTRY", "Lodz", "01-01-2020"),
-    Crime("theft", "LOST PROPERTY", "Warsaw", "05-04-2020"),
-    Crime("assault", "BATTERY", "Radom", "13-04-2020")
+  private val logger = play.api.Logger(this.getClass)
+
+  val Home = Redirect(routes.CrimeController.list(0, 2, ""))
+
+  val crimeForm = Form(
+    mapping(
+      "id" -> ignored(None: Option[Long]),      
+      "description" -> optional(text),
+      "date" -> optional(date("yyyy-MM-dd")),
+      "resolution" -> optional(text),
+      "category" -> optional(longNumber),
+      "street" -> optional(text),
+      "city" -> optional(text),
+      "district" -> optional(text),
+      "latitude" -> optional(of(doubleFormat)),
+      "longitude" -> optional(of(doubleFormat))
+    )(Crime.apply)(Crime.unapply)
   )
 
-  // The URL to the widget.  You can call this directly from the template, but it
-  // can be more convenient to leave the template completely stateless i.e. all
-  // of the "WidgetController" references are inside the .scala file.
-  private val postUrl = routes.CrimeController.createCrime()
 
   def index = Action {
-    Ok(views.html.index())
+    Home
   }
 
-  def listCrimes = Action { implicit request: MessagesRequest[AnyContent] =>
-    // Pass an unpopulated form to the template
-    Ok(views.html.listCrimes(crimes.toSeq, form, postUrl))
-  }
 
-  // This will be the action that handles our form post
-  def createCrime = Action { implicit request: MessagesRequest[AnyContent] =>
-    val errorFunction = { formWithErrors: Form[Data] =>
-      // This is the bad case, where the form had validation errors.
-      // Let's show the user the form again, with the errors highlighted.
-      // Note how we pass the form with errors to the template.
-      BadRequest(views.html.listCrimes(crimes.toSeq, formWithErrors, postUrl))
+  def list(page: Int, orderBy: Int, filter: String) = Action.async { implicit request =>
+    crimeService.list(page = page, orderBy = orderBy, filter = ("%" + filter + "%")).map { page =>
+      Ok(html.list(page, orderBy, filter))
     }
-
-    val successFunction = { data: Data =>
-      // This is the good case, where the form was successfully parsed as a Data object.
-      val crime = Crime(category = data.category, description = data.description, city = data.city, date = data.date)
-      crimes += crime
-      Redirect(routes.CrimeController.listCrimes()).flashing("info" -> "Crime added!")
-    }
-
-    val formValidationResult = form.bindFromRequest
-    formValidationResult.fold(errorFunction, successFunction)
   }
+
+  
+  def edit(id: Long) = Action.async { implicit request =>
+    crimeService.findById(id).flatMap {
+      case Some(crime) =>
+        categoryService.options.map { options =>
+          Ok(html.editForm(id, crimeForm.fill(crime), options))
+        }
+      case other =>
+        Future.successful(NotFound)
+    }
+  }
+
+ 
+  def update(id: Long) = Action.async { implicit request =>
+    crimeForm.bindFromRequest.fold(
+      formWithErrors => {
+        logger.warn(s"form error: $formWithErrors")
+        categoryService.options.map { options =>
+          BadRequest(html.editForm(id, formWithErrors, options))
+        }
+      },
+      crime => {
+        crimeService.update(id, crime).map { _ =>
+          Home.flashing("success" -> "Crime %s has been updated".format(crime.description))
+        }
+      }
+    )
+  }
+
+  
+  def create = Action.async { implicit request =>
+    categoryService.options.map { options =>
+      Ok(html.createForm(crimeForm, options))
+    }
+  }
+
+  
+  def save = Action.async { implicit request =>
+    crimeForm.bindFromRequest.fold(
+      formWithErrors => categoryService.options.map { options =>
+        BadRequest(html.createForm(formWithErrors, options))
+      },
+      crime => {
+        crimeService.insert(crime).map { _ =>
+          Home.flashing("success" -> "Crime %s has been created".format(crime.description))
+        }
+      }
+    )
+  }
+
+  
+  def delete(id: Long) = Action.async {
+    crimeService.delete(id).map { _ =>
+      Home.flashing("success" -> "Crime has been deleted")
+    }
+  }
+
 }

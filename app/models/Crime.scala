@@ -1,10 +1,22 @@
 package models
 
-/**
- * Presentation object used for displaying data in a template.
- *
- * Note that it's a good practice to keep the presentation DTO,
- * which are used for reads, distinct from the form processing DTO,
- * which are used for writes.
- */
-case class Crime(category: String, description: String, city: String, date: String)
+import java.util.Date
+import anorm._
+
+
+case class Crime(id: Option[Long] = None,                    
+                    description: Option[String],
+                    date: Option[Date],
+                    resolution: Option[String],
+                    categoryId: Option[Long],
+                    street: Option[String],
+                    city: Option[String],    
+                    district: Option[String],
+                    latitude: Option[Double],
+                    longitude: Option[Double])
+                    //personId: Option[Id])
+
+object Crime {
+  implicit def toParameters: ToParameterList[Crime] =
+    Macro.toParameters[Crime]
+}

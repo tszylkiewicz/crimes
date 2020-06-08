@@ -1,13 +1,24 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
-# https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-# An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+# Default path will just redirect to the computer list
+GET     /                           controllers.CrimeController.index
 
-GET     /crimes                    controllers.CrimeController.listCrimes
-POST    /crimes                    controllers.CrimeController.createCrime
+# Computers list (look at the default values for pagination parameters)
+GET     /crimes                  controllers.CrimeController.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+
+# Add computer
+GET     /crimes/new              controllers.CrimeController.create
+POST    /crimes                  controllers.CrimeController.save
+
+# Edit existing computer
+GET     /crimes/:id              controllers.CrimeController.edit(id:Long)
+POST    /crimes/:id              controllers.CrimeController.update(id:Long)
+
+# Delete a computer
+POST    /crimes/:id/delete       controllers.CrimeController.delete(id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+

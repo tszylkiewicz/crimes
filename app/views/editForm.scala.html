@@ -1,0 +1,44 @@
+@(id: Long, crimeForm: Form[Crime], categories : Seq[(String, String)])(implicit requestHeader: MessagesRequestHeader)
+
+@import views.html.helper._
+
+@main {
+    
+    <h1>Edit crime</h1>
+    
+    @form(routes.CrimeController.update(id)) {
+        
+        <fieldset>
+            @CSRF.formField
+            @inputText(crimeForm("description"), Symbol("_label") -> "Crime description", Symbol("_help") -> "")
+            @inputText(crimeForm("date"), Symbol("_label") -> "Date", Symbol("_help") -> "")
+            @inputText(crimeForm("resolution"), Symbol("_label") -> "Resolution", Symbol("_help") -> "")
+            
+            @select(
+                crimeForm("category"), 
+                categories, 
+                Symbol("_label") -> "Category", Symbol("_default") -> "-- Choose a category --",
+                Symbol("_showConstraints") -> false
+            )
+
+            @inputText(crimeForm("street"), Symbol("_label") -> "Street", Symbol("_help") -> "")
+            @inputText(crimeForm("city"), Symbol("_label") -> "City", Symbol("_help") -> "")
+            @inputText(crimeForm("district"), Symbol("_label") -> "District", Symbol("_help") -> "")
+            @inputText(crimeForm("latitude"), Symbol("_label") -> "Latitude", Symbol("_help") -> "")
+            @inputText(crimeForm("longitude"), Symbol("_label") -> "Longitude", Symbol("_help") -> "")
+        </fieldset>
+        <p>Dates are in yyyy-MM-dd format</p>
+
+        <div class="actions">
+            <input type="submit" value="Save this crime" class="btn primary"> or 
+            <a href="@routes.CrimeController.list()" class="btn">Cancel</a>
+        </div>
+        
+    }
+    
+    @form(routes.CrimeController.delete(id), Symbol("class") -> "topRight") {
+        @CSRF.formField
+        <input type="submit" value="Delete this crime" class="btn danger">
+    }
+    
+}
