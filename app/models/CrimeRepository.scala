@@ -100,7 +100,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
       SQL("""
         insert into crime values (
           (select next value for crime_seq),
-          {description}, {date}, {resolution}, {categoryId}, {personId}, {personId}, {street}, {city},
+          {description}, {date}, {resolution}, {categoryId}, {personId}, {street}, {city},
           {district}, {latitude}, {longitude}
         )
       """).bind(crime).executeInsert()

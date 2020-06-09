@@ -1,4 +1,4 @@
-@(crimeForm: Form[Crime], categories: Seq[(String, String)])(implicit requestHeader: MessagesRequestHeader)
+@(crimeForm: Form[Crime], categories: Seq[(String, String)], people: Seq[(String, String)])(implicit requestHeader: MessagesRequestHeader)
 
 @import views.html.helper._
 
@@ -18,6 +18,13 @@
                 crimeForm("category"), 
                 categories, 
                 Symbol("_label") -> "Category", Symbol("_default") -> "-- Choose a category --",
+                Symbol("_showConstraints") -> false
+            )
+
+            @select(
+                crimeForm("person"), 
+                people, 
+                Symbol("_label") -> "Person", Symbol("_default") -> "-- Choose a person --",
                 Symbol("_showConstraints") -> false
             )
 

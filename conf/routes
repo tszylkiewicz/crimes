@@ -7,23 +7,23 @@ GET     /                           controllers.CrimeController.index
 
 # Computers list (look at the default values for pagination parameters)
 GET     /crimes                  controllers.CrimeController.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
-GET     /persons                  controllers.PersonController.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+GET     /people                  controllers.PersonController.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
 
 # Add computer
 GET     /crimes/new              controllers.CrimeController.create
 POST    /crimes                  controllers.CrimeController.save
-GET     /persons/new              controllers.PersonController.create
-POST    /persons                 controllers.PersonController.save
+GET     /people/new              controllers.PersonController.create
+POST    /people                 controllers.PersonController.save
 
 # Edit existing computer
 GET     /crimes/:id              controllers.CrimeController.edit(id:Long)
 POST    /crimes/:id              controllers.CrimeController.update(id:Long)
-GET     /persons/:id              controllers.PersonController.edit(id:Long)
-POST    /persons/:id              controllers.PersonController.update(id:Long)
+GET     /people/:id              controllers.PersonController.edit(id:Long)
+POST    /people/:id              controllers.PersonController.update(id:Long)
 
 # Delete a computer
 GET    /crimes/:id/delete       controllers.CrimeController.delete(id:Long)
-GET    /persons/:id/delete       controllers.PersonController.delete(id:Long)
+GET    /people/:id/delete       controllers.PersonController.delete(id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

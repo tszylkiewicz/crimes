@@ -15,6 +15,7 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class CrimeController @Inject()(crimeService: CrimeRepository,
                                categoryService: CategoryRepository,
+                               personService: PersonRepository,
                                cc: MessagesControllerComponents)(implicit ec: ExecutionContext)
   extends MessagesAbstractController(cc) {
 
@@ -54,9 +55,10 @@ class CrimeController @Inject()(crimeService: CrimeRepository,
   def edit(id: Long) = Action.async { implicit request =>
     crimeService.findById(id).flatMap {
       case Some(crime) =>
+      personService.options.flatMap { options2 =>
         categoryService.options.map { options =>
-          Ok(html.editForm(id, crimeForm.fill(crime), options))
-        }
+          Ok(html.editForm(id, crimeForm.fill(crime), options, options2))
+        }}
       case other =>
         Future.successful(NotFound)
     }
@@ -67,9 +69,10 @@ class CrimeController @Inject()(crimeService: CrimeRepository,
     crimeForm.bindFromRequest.fold(
       formWithErrors => {
         logger.warn(s"form error: $formWithErrors")
+        personService.options.flatMap { options2 =>
         categoryService.options.map { options =>
-          BadRequest(html.editForm(id, formWithErrors, options))
-        }
+          BadRequest(html.editForm(id, formWithErrors, options, options2))
+        }}
       },
       crime => {
         crimeService.update(id, crime).map { _ =>
@@ -81,17 +84,18 @@ class CrimeController @Inject()(crimeService: CrimeRepository,
 
   
   def create = Action.async { implicit request =>
+  personService.options.flatMap { options2 =>
     categoryService.options.map { options =>
-      Ok(html.createForm(crimeForm, options))
-    }
+      Ok(html.createForm(crimeForm, options, options2))
+    }}
   }
 
   
   def save = Action.async { implicit request =>
     crimeForm.bindFromRequest.fold(
-      formWithErrors => categoryService.options.map { options =>
-        BadRequest(html.createForm(formWithErrors, options))
-      },
+      formWithErrors => personService.options.flatMap { options2 => categoryService.options.map { options =>
+        BadRequest(html.createForm(formWithErrors, options, options2))
+      }},
       crime => {
         crimeService.insert(crime).map { _ =>
           Home.flashing("success" -> "Crime %s has been created".format(crime.description))

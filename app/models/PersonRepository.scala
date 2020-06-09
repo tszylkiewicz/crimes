@@ -8,6 +8,7 @@ import anorm._
 import play.api.db.DBApi
 
 import scala.concurrent.Future
+import scala.util.{ Failure, Success }
 
 import models.Person
 
@@ -46,7 +47,7 @@ private val toReturn = simple map {
 
     db.withConnection { implicit connection =>
 
-      val persons = SQL"""
+      val people = SQL"""
         select * from person
         where person.firstName like ${filter}
         order by ${orderBy} nulls last
@@ -58,7 +59,7 @@ private val toReturn = simple map {
         where person.firstName like ${filter}
       """.as(scalar[Long].single)
 
-      Page(persons, page, offset, totalRows)
+      Page(people, page, offset, totalRows)
     }
   }(ec)
 
@@ -89,8 +90,30 @@ private val toReturn = simple map {
   
   def delete(id: Long) = Future {
     db.withConnection { implicit connection =>
+      SQL"update crime set person_id = null where person_id = ${id}".executeUpdate()
       SQL"delete from person where id = ${id}".executeUpdate()
     }
   }(ec)
+
+  def options: Future[Seq[(String,String)]] = Future(db.withConnection { implicit connection =>
+    SQL"select * from person order by firstName".
+      fold(Seq.empty[(String, String)], ColumnAliaser.empty) { (acc, row) => // Anorm streaming
+        row.as(simple) match {
+          case Failure(parseErr) => {
+            println(s"Fails to parse $row: $parseErr")
+            acc
+          }
+
+          case Success(Person(Some(id), firstName, lastName, phone, email)) =>
+            (id.toString -> firstName.get.concat(" ").concat(lastName.get)) +: acc
+
+          case Success(Person(None, _, _, _, _)) => acc
+        }
+      }
+  }).flatMap {
+    case Left(err :: _) => Future.failed(err)
+    case Left(_) => Future(Seq.empty)
+    case Right(acc) => Future.successful(acc.reverse)
+  }
 
 }
