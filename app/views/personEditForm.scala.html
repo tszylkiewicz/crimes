@@ -1,0 +1,31 @@
+@(id: Long, personForm: Form[Person])(implicit requestHeader: MessagesRequestHeader)
+
+@import views.html.helper._
+
+@main {
+    
+    <h1>Edit person</h1>
+    
+    @form(routes.PersonController.update(id)) {
+        
+        <fieldset>
+            @CSRF.formField
+            @inputText(personForm("firstName"), Symbol("_label") -> "First Name", Symbol("_help") -> "")
+            @inputText(personForm("lastName"), Symbol("_label") -> "Last Name", Symbol("_help") -> "")
+            @inputText(personForm("phone"), Symbol("_label") -> "Phone number", Symbol("_help") -> "")
+            @inputText(personForm("email"), Symbol("_label") -> "Email", Symbol("_help") -> "")
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" value="Save this person" class="btn primary"> or 
+            <a href="@routes.PersonController.list()" class="btn">Cancel</a>
+        </div>
+        
+    }
+    
+    @form(routes.PersonController.delete(id), Symbol("class") -> "topRight") {
+        @CSRF.formField
+        <input type="submit" value="Delete this person" class="btn danger">
+    }
+    
+}

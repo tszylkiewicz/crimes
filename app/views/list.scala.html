@@ -88,6 +88,9 @@
                             <td>
                                 @crime.longitude.getOrElse { <em>-</em> }
                             </td>
+                            <td>
+                                <a href="@routes.CrimeController.delete(crime.id.get)" class="btn">REMOVE</a>
+                            </td>
                         </tr>
                     }
                 }
