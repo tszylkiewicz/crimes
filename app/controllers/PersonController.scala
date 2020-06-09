@@ -61,7 +61,7 @@ class PersonController @Inject()(personService: PersonRepository,
       },
       person => {
         personService.update(id, person).map { _ =>
-          Home.flashing("success" -> "Person %s has been updated".format(person.firstName))
+          Home.flashing("success" -> "Person %s has been updated".format(person.firstName.get))
         }
       }
     )
@@ -80,7 +80,7 @@ class PersonController @Inject()(personService: PersonRepository,
       },
       person => {
         personService.insert(person).map { _ =>
-          Home.flashing("success" -> "Person %s has been created".format(person.firstName))
+          Home.flashing("success" -> "Person %s has been created".format(person.firstName.get))
         }
       }
     )
