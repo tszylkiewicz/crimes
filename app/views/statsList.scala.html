@@ -1,4 +1,4 @@
-@(crimeStats: List[(Option[String], Int, Float)], currentOrderBy: Int, currentFilter: String)(implicit request: MessagesRequestHeader)
+@(crimeStats: Map[String,List[(Option[String], Int, Float)]], currentOrderBy: Int, currentFilter: String)(implicit request: MessagesRequestHeader)
 
 @import helper._
 
@@ -29,7 +29,7 @@
         </div>
     }
 
-    
+    @for((key, value) <- crimeStats) {
         <table class="computers zebra-striped">
             <thead>
                 <tr>
@@ -40,7 +40,7 @@
             </thead>
             <tbody>
 
-                @crimeStats.map {
+                @value.map {
                     case (a, b, c) => {
                         <tr>
                             <td>
@@ -57,6 +57,6 @@
                 }
             </tbody>
         </table>   
-
+    }
 
 }

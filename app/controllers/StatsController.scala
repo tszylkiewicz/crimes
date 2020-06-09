@@ -22,30 +22,13 @@ class StatsController @Inject()(crimeService: CrimeRepository,
 
   private val logger = play.api.Logger(this.getClass)
 
-  def generate(orderBy: Int, filter: String) = Action.async { implicit request =>
-      // Ok(html.statsList(getList(), orderBy, filter))    
+  def generate(orderBy: Int, filter: String) = Action.async { implicit request => 
       crimeService.listAll().map { page =>
-      Ok(html.statsList(page.groupBy(_.city).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat)).toList, orderBy, filter))
+      val crimesData = Map("city" -> page.groupBy(_.city).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
+      "district" -> page.groupBy(_.district).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList)
+      println(crimesData)    
+      Ok(html.statsList(crimesData, orderBy, filter))
     }
   }
-
-  // def getList(): List[(Option[String], Int, Float)] = Future {
-
-  //   var records:Array[Record]=new Array[Record](1)
-  //   records(0) = Record("a", 1, "10%")
-  //   val crimesStats = crimeService.listAll()
-  //   var Stats = Nil
-  //   crimesStats onComplete {
-  //       case Success(crimesStats) => return crimesStats.groupBy(_.city).map(t=>(t._1, t._2.length, t._2.length.toFloat/crimesStats.length.toFloat)).toList
-  //       case Failure(t) => None
-  //     }
-  //   println(Stats)
-  //     // val records = [Record("a", 1, "10%"), Record("a", 1, "10%")]
-      
-      
-
-  //     Page(records, page, offset, totalRows)
-
-  // }(ec)
 
 }
