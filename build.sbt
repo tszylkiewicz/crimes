@@ -16,3 +16,4 @@ libraryDependencies += "org.webjars" % "flot" % "0.8.3-1"
 libraryDependencies += "org.webjars" % "bootstrap" % "3.3.7"
 libraryDependencies += "org.awaitility" % "awaitility" % "4.0.1" % Test
 
+

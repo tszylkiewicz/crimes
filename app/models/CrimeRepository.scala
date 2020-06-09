@@ -53,6 +53,17 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
     }
   }(ec)
 
+  def listAll(): Future[Seq[Crime]] = Future {
+
+    db.withConnection { implicit connection =>
+
+      val crimes = SQL"""
+        select * from crime
+      """.as(simple.*)  
+
+      crimes.toSeq
+    }
+  }
   
   def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Future[Page[(Crime, Option[Category], Option[Person])]] = Future {
 

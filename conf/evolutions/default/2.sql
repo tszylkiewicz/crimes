@@ -17,7 +17,7 @@ values (3, 'Mike', 'Tyson', '387340912', 'tiger@onet.eu', 'Detective');
 insert into crime (id, description, date, resolution, category_id, street, city, district, latitude, longitude, person_id) 
 values (1, 'Battery', '1993-10-21', 'Arrest', 1, 'Politechniki', 'Lodz', 'lodzkie', 81.172633, 85.581219, 1);
 insert into crime (id, description, date, resolution, category_id, street, city, district, latitude, longitude, person_id) 
-values (2, 'Battery', '1993-10-21', 'Arrest', 2, 'Politechniki', 'Lodz', 'lodzkie', 81.172633, 85.581219, 2);
+values (2, 'Battery', '1993-10-21', 'Arrest', 2, 'Politechniki', 'Warsaw', 'lodzkie', 81.172633, 85.581219, 2);
 insert into crime (id, description, date, resolution, category_id, street, city, district, latitude, longitude, person_id) 
 values (3, 'Battery', '1993-10-21', 'Arrest', 3, 'Politechniki', 'Lodz', 'lodzkie', 81.172633, 85.581219, 3);
 

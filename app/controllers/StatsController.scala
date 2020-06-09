@@ -7,6 +7,7 @@ import play.api.data._
 import play.api.mvc._
 import views._
 import play.api.data.format.Formats._
+import scala.util.{Success, Failure}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -21,22 +22,30 @@ class StatsController @Inject()(crimeService: CrimeRepository,
 
   private val logger = play.api.Logger(this.getClass)
 
-  def generate(page: Int, orderBy: Int, filter: String) = Action.async { implicit request =>
-    getList(page = page, orderBy = orderBy, filter = ("%" + filter + "%")).map { page =>
-      Ok(html.statsList(page, orderBy, filter))
+  def generate(orderBy: Int, filter: String) = Action.async { implicit request =>
+      // Ok(html.statsList(getList(), orderBy, filter))    
+      crimeService.listAll().map { page =>
+      Ok(html.statsList(page.groupBy(_.city).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat)).toList, orderBy, filter))
     }
   }
 
-  def getList(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Future[Page[(Record)]] = Future {
+  // def getList(): List[(Option[String], Int, Float)] = Future {
 
-    val offset = pageSize * page
-    var records:Array[Record]=new Array[Record](1)
-    records(0) = Record("a", 1, "10%")
-      // val records = [Record("a", 1, "10%"), Record("a", 1, "10%")]
+  //   var records:Array[Record]=new Array[Record](1)
+  //   records(0) = Record("a", 1, "10%")
+  //   val crimesStats = crimeService.listAll()
+  //   var Stats = Nil
+  //   crimesStats onComplete {
+  //       case Success(crimesStats) => return crimesStats.groupBy(_.city).map(t=>(t._1, t._2.length, t._2.length.toFloat/crimesStats.length.toFloat)).toList
+  //       case Failure(t) => None
+  //     }
+  //   println(Stats)
+  //     // val records = [Record("a", 1, "10%"), Record("a", 1, "10%")]
+      
+      
 
-      val totalRows = 1
+  //     Page(records, page, offset, totalRows)
 
-      Page(records, page, offset, totalRows)
+  // }(ec)
 
-  }(ec)
 }
