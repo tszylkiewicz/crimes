@@ -1,1 +1,3 @@
-# https://www.playframework.com/documentation/latest/ScalaI18N
+# Messages
+
+crimes.list.title={0,choice,0#No crimes|1#One crime|1<{0,number,integer} crimes} found
