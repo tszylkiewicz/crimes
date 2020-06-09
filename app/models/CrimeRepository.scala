@@ -41,6 +41,26 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
     }
   }
 
+  private val simpleStats = {
+    get[Option[Long]]("crime.id") ~      
+      get[String]("crime.description") ~
+      get[Option[Date]]("crime.date") ~
+      get[Option[String]]("crime.resolution") ~
+      get[Option[Long]]("crime.category_id") ~
+      get[Option[String]]("crime.street") ~
+      get[Option[String]]("crime.city") ~
+      get[Option[String]]("crime.district") ~ 
+      get[Option[Double]]("crime.latitude") ~
+      get[Option[Double]]("crime.longitude") ~
+      get[Option[Long]]("crime.person_id") ~
+      get[Option[String]]("person.firstName") ~
+      get[Option[String]]("person.lastName") ~
+      get[Option[String]]("category.name") map {
+      case id ~ description ~ date ~ resolution ~ categoryId ~ street ~ city ~ district ~ latitude ~ longitude ~ personId ~ personf ~ personl ~ category =>
+        CrimeStats(id, description, date, resolution, categoryId, street, city, district, latitude, longitude, personId, Option(personf.get.concat(" ").concat(personl.get)), category)
+    }
+  }
+
   
   private val withCategoryAndPerson = simple ~ (categoryRepository.simple.?) ~ (personRepository.simple.?) map {
     case crime ~ category ~ person => (crime, category, person)
@@ -53,13 +73,15 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
     }
   }(ec)
 
-  def listAll(): Future[Seq[Crime]] = Future {
+  def listAll(): Future[Seq[CrimeStats]] = Future {
 
     db.withConnection { implicit connection =>
 
       val crimes = SQL"""
         select * from crime
-      """.as(simple.*)  
+        left join person on crime.person_id = person.id
+        left join category on crime.category_id = category.id
+      """.as(simpleStats.*)  
 
       crimes.toSeq
     }

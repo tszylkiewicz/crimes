@@ -24,8 +24,12 @@ class StatsController @Inject()(crimeService: CrimeRepository,
 
   def generate(orderBy: Int, filter: String) = Action.async { implicit request => 
       crimeService.listAll().map { page =>
-      val crimesData = Map("city" -> page.groupBy(_.city).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
-      "district" -> page.groupBy(_.district).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList)
+      val crimesData = Map("District" -> page.groupBy(_.district).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
+      "City" -> page.groupBy(_.city).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
+      "Street" -> page.groupBy(_.street).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
+      "Category" -> page.groupBy(_.category).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
+      "Resolution" -> page.groupBy(_.resolution).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
+      "Person" -> page.groupBy(_.person).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList)
       println(crimesData)    
       Ok(html.statsList(crimesData, orderBy, filter))
     }
