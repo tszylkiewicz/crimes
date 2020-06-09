@@ -1,4 +1,4 @@
-@(id: Long, personForm: Form[Person])(implicit requestHeader: MessagesRequestHeader)
+@(id: Long, personForm: Form[Person], ranks: Seq[(String, String)])(implicit requestHeader: MessagesRequestHeader)
 
 @import views.html.helper._
 
@@ -14,6 +14,12 @@
             @inputText(personForm("lastName"), Symbol("_label") -> "Last Name", Symbol("_help") -> "")
             @inputText(personForm("phone"), Symbol("_label") -> "Phone number", Symbol("_help") -> "")
             @inputText(personForm("email"), Symbol("_label") -> "Email", Symbol("_help") -> "")
+            @select(
+                personForm("rank"), 
+                ranks, 
+                Symbol("_label") -> "Rank", Symbol("_default") -> "-- Choose a rank --",
+                Symbol("_showConstraints") -> false
+            )
         </fieldset>
 
         <div class="actions">

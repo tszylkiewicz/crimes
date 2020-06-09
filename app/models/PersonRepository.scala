@@ -24,9 +24,10 @@ class PersonRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionCon
       get[Option[String]]("person.firstName") ~
       get[Option[String]]("person.lastName") ~
       get[Option[String]]("person.phone") ~
-      get[Option[String]]("person.email") map {
-      case id ~ firstName ~ lastName ~ phone ~ email =>
-        Person(id, firstName, lastName, phone, email)
+      get[Option[String]]("person.email") ~
+      get[Option[String]]("person.rank") map {
+      case id ~ firstName ~ lastName ~ phone ~ email ~ rank =>
+        Person(id, firstName, lastName, phone, email, rank)
     }
   }
 
@@ -67,7 +68,7 @@ private val toReturn = simple map {
     db.withConnection { implicit connection =>
       SQL("""
         update person set firstName = {firstName}, lastName = {lastName}, 
-          phone = {phone}, email = {email}
+          phone = {phone}, email = {email}, rank = {rank}
         where id = {id}
       """).bind(person.copy(id = Some(id)/* ensure */)).executeUpdate()
       // case class binding using ToParameterList,
@@ -76,12 +77,12 @@ private val toReturn = simple map {
   }(ec)
 
   
-  def insert(person: Person): Future[Option[Long]] = Future {
+  def insert(person: Person): Future[Option[Long]] = Future {    
     db.withConnection { implicit connection =>
       SQL("""
         insert into person values (
-          (select next value for crime_seq),
-          {firstName}, {lastName}, {phone}, {email}
+          (select next value for person_seq),
+          {firstName}, {lastName}, {phone}, {email}, {rank}
         )
       """).bind(person).executeInsert()
     }
@@ -104,10 +105,10 @@ private val toReturn = simple map {
             acc
           }
 
-          case Success(Person(Some(id), firstName, lastName, phone, email)) =>
+          case Success(Person(Some(id), firstName, lastName, phone, email, rank)) =>
             (id.toString -> firstName.get.concat(" ").concat(lastName.get)) +: acc
 
-          case Success(Person(None, _, _, _, _)) => acc
+          case Success(Person(None, _, _, _, _, _)) => acc
         }
       }
   }).flatMap {

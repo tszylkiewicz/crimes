@@ -28,9 +28,10 @@ create table crime (
 create table person (
   id                        bigint not null,
   firstName                      varchar(255),
-  lastName                      varchar(255),
+  lastName                      varchar(255),  
   phone                      varchar(255),
   email                      varchar(255),
+  rank                        varchar(255),
   constraint pk_person primary key (id))
 ;
 

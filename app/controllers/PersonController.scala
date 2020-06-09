@@ -27,7 +27,8 @@ class PersonController @Inject()(personService: PersonRepository,
       "firstName" -> optional(text),
       "lastName" -> optional(text),
       "phone" -> optional(text),
-      "email" -> optional(text)
+      "email" -> optional(text),
+      "rank" ->optional(text),
     )(Person.apply)(Person.unapply)
   )
 
@@ -46,7 +47,7 @@ class PersonController @Inject()(personService: PersonRepository,
   def edit(id: Long) = Action.async { implicit request =>
     personService.findById(id).flatMap {
       case Some(person) =>
-          Future(Ok(html.personEditForm(id, personForm.fill(person))))
+          Future(Ok(html.personEditForm(id, personForm.fill(person), Rank.values.toSeq.map(_.toString).zipWithIndex.map(tuple => (tuple._1, tuple._1)))))
       case other =>
         Future.successful(NotFound)
     }
@@ -57,7 +58,7 @@ class PersonController @Inject()(personService: PersonRepository,
     personForm.bindFromRequest.fold(
       formWithErrors => {
         logger.warn(s"form error: $formWithErrors")
-          Future(BadRequest(html.personEditForm(id, formWithErrors)))
+          Future(BadRequest(html.personEditForm(id, formWithErrors, Rank.values.toSeq.map(_.toString).zipWithIndex.map(tuple => (tuple._1, tuple._1)))))
       },
       person => {
         personService.update(id, person).map { _ =>
@@ -69,14 +70,14 @@ class PersonController @Inject()(personService: PersonRepository,
 
   
   def create = Action.async { implicit request =>
-      Future(Ok(html.personCreateForm(personForm)))
+      Future(Ok(html.personCreateForm(personForm, Rank.values.toSeq.map(_.toString).zipWithIndex.map(tuple => (tuple._1, tuple._1)))))
   }
 
   
   def save = Action.async { implicit request =>
     personForm.bindFromRequest.fold(
       formWithErrors => {
-        Future(BadRequest(html.personCreateForm(formWithErrors)))
+        Future(BadRequest(html.personCreateForm(formWithErrors, Rank.values.toSeq.sorted.map(_.toString).zipWithIndex.map(tuple => (tuple._1, tuple._1)))))
       },
       person => {
         personService.insert(person).map { _ =>

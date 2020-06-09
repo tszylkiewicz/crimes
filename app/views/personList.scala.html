@@ -51,6 +51,7 @@
                     @header(3, "Last Name")
                     @header(4, "Phone")
                     @header(5, "Email")
+                    @header(6, "Rank")
                 </tr>
             </thead>
             <tbody>
@@ -67,6 +68,9 @@
                             </td>
                             <td>
                                 @person.email.getOrElse { <em>-</em> }
+                            </td>
+                            <td>
+                                @person.rank.getOrElse { <em>-</em> }
                             </td>
                             <td>
                                 <a href="@routes.PersonController.delete(person.id.get)" class="btn">REMOVE</a>
