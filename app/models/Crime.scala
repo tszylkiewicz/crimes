@@ -13,8 +13,8 @@ case class Crime(id: Option[Long] = None,
                     city: Option[String],    
                     district: Option[String],
                     latitude: Option[Double],
-                    longitude: Option[Double])
-                    //personId: Option[Id])
+                    longitude: Option[Double],
+                    personId: Option[Long])
 
 object Crime {
   implicit def toParameters: ToParameterList[Crime] =

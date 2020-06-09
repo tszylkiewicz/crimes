@@ -19,7 +19,7 @@ case class Page[A](items: Seq[A], page: Int, offset: Long, total: Long) {
 
 
 @javax.inject.Singleton
-class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryRepository)(implicit ec: DatabaseExecutionContext) {
+class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryRepository, personRepository: PersonRepository)(implicit ec: DatabaseExecutionContext) {
 
   private val db = dbapi.database("default")
 
@@ -34,9 +34,10 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
       get[Option[String]]("crime.city") ~
       get[Option[String]]("crime.district") ~ 
       get[Option[Double]]("crime.latitude") ~
-      get[Option[Double]]("crime.longitude") map {
-      case id ~ description ~ date ~ resolution ~ categoryId ~ street ~ city ~ district ~ latitude ~ longitude =>
-        Crime(id, description, date, resolution, categoryId, street, city, district, latitude, longitude)
+      get[Option[Double]]("crime.longitude") ~
+      get[Option[Long]]("crime.person_id") map {
+      case id ~ description ~ date ~ resolution ~ categoryId ~ street ~ city ~ district ~ latitude ~ longitude ~ personId =>
+        Crime(id, description, date, resolution, categoryId, street, city, district, latitude, longitude, personId)
     }
   }
 
@@ -62,6 +63,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
       val crimes = SQL"""
         select * from crime
         left join category on crime.category_id = category.id
+        left join person on crime.person_id = person.id
         where crime.description like ${filter}
         order by ${orderBy} nulls last
         limit ${pageSize} offset ${offset}
@@ -70,6 +72,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
       val totalRows = SQL"""
         select count(*) from crime
         left join category on crime.category_id = category.id
+        left join person on crime.person_id = person.id
         where crime.description like ${filter}
       """.as(scalar[Long].single)
 
@@ -83,7 +86,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
       SQL("""
         update crime set category_id = {categoryId}, description = {description}, 
           date = {date}, resolution = {resolution}, street = {street}, city = {city},
-          district = {district}, latitude = {latitude}, longitude = {longitude}
+          district = {district}, latitude = {latitude}, longitude = {longitude}, person_id = {personId}
         where id = {id}
       """).bind(crime.copy(id = Some(id)/* ensure */)).executeUpdate()
       // case class binding using ToParameterList,
@@ -97,7 +100,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
       SQL("""
         insert into crime values (
           (select next value for crime_seq),
-          {description}, {date}, {resolution}, {categoryId}, {street}, {city},
+          {description}, {date}, {resolution}, {categoryId}, {personId}, {personId}, {street}, {city},
           {district}, {latitude}, {longitude}
         )
       """).bind(crime).executeInsert()

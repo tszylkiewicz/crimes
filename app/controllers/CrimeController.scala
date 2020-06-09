@@ -33,7 +33,8 @@ class CrimeController @Inject()(crimeService: CrimeRepository,
       "city" -> optional(text),
       "district" -> optional(text),
       "latitude" -> optional(of(doubleFormat)),
-      "longitude" -> optional(of(doubleFormat))
+      "longitude" -> optional(of(doubleFormat)),
+      "person" -> optional(longNumber)
     )(Crime.apply)(Crime.unapply)
   )
 

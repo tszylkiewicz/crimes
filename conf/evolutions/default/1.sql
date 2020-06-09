@@ -16,6 +16,7 @@ create table crime (
   date                      timestamp,
   resolution                varchar(255),
   category_id                bigint,
+  person_id                bigint,
   street                varchar(255),
   city                varchar(255),
   district                varchar(255),

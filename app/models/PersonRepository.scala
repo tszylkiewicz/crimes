@@ -18,7 +18,7 @@ class PersonRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionCon
   private val db = dbapi.database("default")
 
   
-  private val simple = {
+  private[models] val simple = {
     get[Option[Long]]("person.id") ~      
       get[Option[String]]("person.firstName") ~
       get[Option[String]]("person.lastName") ~
