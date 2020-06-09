@@ -5,7 +5,7 @@ import anorm._
 
 
 case class Crime(id: Option[Long] = None,                    
-                    description: Option[String],
+                    description: String,
                     date: Option[Date],
                     resolution: Option[String],
                     categoryId: Option[Long],

@@ -23,7 +23,7 @@ class ModelSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
       whenReady(crimeService.findById(1)) { maybeCrime =>
         val macintosh = maybeCrime.get
 
-        macintosh.description must equal(Some("Battery"))
+        macintosh.description must equal("Battery")
         macintosh.categoryId must equal(Some(1))
         macintosh.date.value must matchPattern {
           case date:java.util.Date if dateIs(date, "1993-10-21") =>
@@ -49,7 +49,7 @@ class ModelSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
     "be updated if needed" in {
 
       val result = crimeService.findById(1).flatMap { computer =>
-        crimeService.update(1, Crime(description=Some("Description"),
+        crimeService.update(1, Crime(description="Description",
           date=None,
           resolution=Some("Resolution"),
           categoryId=Some(2),
@@ -66,7 +66,7 @@ class ModelSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
       whenReady(result) { crime =>
         val macintosh = crime.get
 
-        macintosh.description must equal(Some("Description"))
+        macintosh.description must equal("Description")
         macintosh.categoryId must equal(Some(2))
         macintosh.date mustBe None
         macintosh.resolution must equal(Some("Resolution"))

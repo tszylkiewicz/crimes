@@ -26,7 +26,7 @@ class CrimeController @Inject()(crimeService: CrimeRepository,
   val crimeForm = Form(
     mapping(
       "id" -> ignored(None: Option[Long]),      
-      "description" -> optional(text),
+      "description" -> nonEmptyText,
       "date" -> optional(date("yyyy-MM-dd")),
       "resolution" -> optional(text),
       "category" -> optional(longNumber),

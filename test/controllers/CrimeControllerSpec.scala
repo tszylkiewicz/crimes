@@ -45,26 +45,25 @@ class CrimeControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFu
       status(badResult) must equal(BAD_REQUEST)
 
       val badDateFormat = crimeController.save(
-        FakeRequest().withFormUrlEncodedBody("description" -> "Description", "date" -> "2019-01-15", "resolution" -> "None", "category" -> "2",
-          "street" -> "Moniuszki", "city" -> "Warsaw", "district" -> "Praga", "latitude" -> "11.111111", "longitude" -> "22.222222", "person" -> "2").withCSRFToken
+        FakeRequest().withFormUrlEncodedBody("description" -> "Description", "date" -> "badbadbad", "resolution" -> "None", "categoryId" -> "2",
+          "street" -> "Moniuszki", "city" -> "Warsaw", "district" -> "Praga", "latitude" -> "11.111111", "longitude" -> "22.222222", "personId" -> "2").withCSRFToken
       )
 
       status(badDateFormat) must equal(BAD_REQUEST)
-      contentAsString(badDateFormat) must include("""<option value="2" selected="selected">Burglary</option>""")
-      contentAsString(badDateFormat) must include("""<input type="text" id="date" name="date" value="2019-01-15" """)
+      contentAsString(badDateFormat) must include("""<input type="text" id="date" name="date" value="badbadbad" """)
       contentAsString(badDateFormat) must include("""<input type="text" id="description" name="description" value="Description" """)
 
 
       val result = crimeController.save(
-        FakeRequest().withFormUrlEncodedBody("description" -> "Description", "date" -> "2019-01-15", "resolution" -> "None", "category" -> "2",
-          "street" -> "Moniuszki", "city" -> "Warsaw", "district" -> "Praga", "latitude" -> "11.111111", "longitude" -> "22.222222", "person" -> "2").withCSRFToken
+        FakeRequest().withFormUrlEncodedBody("description" -> "TEST123", "date" -> "2019-01-15", "resolution" -> "None", "categoryId" -> "2",
+          "street" -> "Moniuszki", "city" -> "Warsaw", "district" -> "Praga", "latitude" -> "11.111111", "longitude" -> "22.222222", "personId" -> "2").withCSRFToken
       )
 
       status(result) must equal(SEE_OTHER)
       redirectLocation(result) mustBe Some("/crimes")
-      flash(result).get("success") mustBe Some("Crime Description has been created")
+      flash(result).get("success") mustBe Some("Crime TEST123 has been created")
 
-      val list = crimeController.list(0, 2, "Description")(FakeRequest())
+      val list = crimeController.list(0, 2, "TEST123")(FakeRequest())
 
       status(list) must equal(OK)
       contentAsString(list) must include("One crime found")

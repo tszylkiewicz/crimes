@@ -26,7 +26,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
   
   private val simple = {
     get[Option[Long]]("crime.id") ~      
-      get[Option[String]]("crime.description") ~
+      get[String]("crime.description") ~
       get[Option[Date]]("crime.date") ~
       get[Option[String]]("crime.resolution") ~
       get[Option[Long]]("crime.category_id") ~
