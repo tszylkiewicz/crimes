@@ -1,3 +1,4 @@
 # Messages
 
 crimes.list.title={0,choice,0#No crimes|1#One crime|1<{0,number,integer} crimes} found
+people.list.title={0,choice,0#Noone|1#One person|1<{0,number,integer} people} found
