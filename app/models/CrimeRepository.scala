@@ -42,8 +42,8 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
   }
 
   
-  private val withCategory = simple ~ (categoryRepository.simple.?) map {
-    case crime ~ category => crime -> category
+  private val withCategoryAndPerson = simple ~ (categoryRepository.simple.?) ~ (personRepository.simple.?) map {
+    case crime ~ category ~ person => (crime, category, person)
   }
 
   
@@ -54,7 +54,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
   }(ec)
 
   
-  def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Future[Page[(Crime, Option[Category])]] = Future {
+  def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Future[Page[(Crime, Option[Category], Option[Person])]] = Future {
 
     val offset = pageSize * page
 
@@ -67,7 +67,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
         where crime.description like ${filter}
         order by ${orderBy} nulls last
         limit ${pageSize} offset ${offset}
-      """.as(withCategory.*)
+      """.as(withCategoryAndPerson.*)
 
       val totalRows = SQL"""
         select count(*) from crime

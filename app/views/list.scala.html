@@ -1,4 +1,4 @@
-@(currentPage: Page[(Crime, Option[Category])], currentOrderBy: Int, currentFilter: String)(implicit request: MessagesRequestHeader)
+@(currentPage: Page[(Crime, Option[Category], Option[Person])], currentOrderBy: Int, currentFilter: String)(implicit request: MessagesRequestHeader)
 
 @import helper._
 
@@ -56,12 +56,13 @@
                     @header(8, "District")
                     @header(9, "Latitude")
                     @header(10, "Longitude")
+                    @header(11, "Person")
                 </tr>
             </thead>
             <tbody>
 
                 @crimes.map {
-                    case (crime, category) => {
+                    case (crime, category, person) => {
                         <tr>
                             <td><a href="@routes.CrimeController.edit(crime.id.get)">@crime.description</a></td>
                             <td>
@@ -87,6 +88,9 @@
                             </td>
                             <td>
                                 @crime.longitude.getOrElse { <em>-</em> }
+                            </td>
+                            <td>
+                                @person.map(_.firstName).getOrElse { <em>-</em> } @person.map(_.lastName).getOrElse { <em>-</em> }
                             </td>
                             <td>
                                 <a href="@routes.CrimeController.delete(crime.id.get)" class="btn">REMOVE</a>

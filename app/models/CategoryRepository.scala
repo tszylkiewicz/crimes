@@ -11,8 +11,6 @@ import play.api.db.DBApi
 
 import scala.concurrent.Future
 
-case class Category(id: Option[Long] = None, name: String)
-
 @javax.inject.Singleton
 class CategoryRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionContext) {
 
