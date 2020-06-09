@@ -8,6 +8,7 @@ GET     /                           controllers.CrimeController.index
 # Computers list (look at the default values for pagination parameters)
 GET     /crimes                  controllers.CrimeController.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
 GET     /people                  controllers.PersonController.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+GET     /stats                   controllers.StatsController.generate(p:Int ?= 0, s:Int ?= 2, f ?= "")
 
 # Add computer
 GET     /crimes/new              controllers.CrimeController.create
