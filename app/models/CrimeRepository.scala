@@ -57,7 +57,7 @@ class CrimeRepository @Inject()(dbapi: DBApi, categoryRepository: CategoryReposi
       get[Option[String]]("person.lastName") ~
       get[Option[String]]("category.name") map {
       case id ~ description ~ date ~ resolution ~ categoryId ~ street ~ city ~ district ~ latitude ~ longitude ~ personId ~ personf ~ personl ~ category =>
-        CrimeStats(id, description, date, resolution, categoryId, street, city, district, latitude, longitude, personId, Option(personf.get.concat(" ").concat(personl.get)), category)
+        CrimeStats(id, description, date, resolution, categoryId, street, city, district, latitude, longitude, personId, Option(personf.getOrElse("No").concat(" ").concat(personl.getOrElse("Person"))), category)
     }
   }
 
