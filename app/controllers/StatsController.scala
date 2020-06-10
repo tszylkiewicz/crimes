@@ -29,8 +29,7 @@ class StatsController @Inject()(crimeService: CrimeRepository,
       "Street" -> page.groupBy(_.street).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
       "Category" -> page.groupBy(_.category).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
       "Resolution" -> page.groupBy(_.resolution).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList,
-      "Person" -> page.groupBy(_.person).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList)
-      println(crimesData)    
+      "Person" -> page.groupBy(_.person).map(t=>(t._1, t._2.length, t._2.length.toFloat/page.length.toFloat*100f)).toList)  
       Ok(html.statsList(crimesData, orderBy, filter))
     }
   }
