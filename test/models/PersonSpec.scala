@@ -19,6 +19,7 @@ class PersonSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
         macintosh.lastName.get must equal("Snow")
         macintosh.phone.get must equal("123456789")
         macintosh.email.get must equal("johnsnow@edu.p.lodz.pl")
+        macintosh.rank.get must equal("Aspirant")
       }
     }
     
@@ -37,6 +38,7 @@ class PersonSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
           lastName=Some("Nowak"),
           phone=Some("111222333"),
           email=Some("test@edu.p.lodz.pl"),
+          rank=Some("Detective"),
           )).flatMap { _ =>
           personService.findById(1)
         }
@@ -49,6 +51,7 @@ class PersonSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
         macintosh.lastName.get must equal("Nowak")
         macintosh.phone.get must equal("111222333")
         macintosh.email.get must equal("test@edu.p.lodz.pl")
+        macintosh.rank.get must equal("Detective")
       }
     }
   }
