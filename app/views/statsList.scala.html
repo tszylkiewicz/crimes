@@ -1,4 +1,4 @@
-@(crimeStats: Map[String,List[(Option[String], Int, Float)]], currentOrderBy: Int, currentFilter: String)(implicit request: MessagesRequestHeader)
+@(crimeStats: Map[String,List[(Int, Float, Option[String])]], currentOrderBy: Int, currentFilter: String)(implicit request: MessagesRequestHeader)
 
 @import helper._
 
@@ -45,13 +45,13 @@
                     case (a, b, c) => {
                         <tr>
                             <td>
+                                @c
+                            </td>
+                            <td>
                                 @a
                             </td>
                             <td>
-                                @b
-                            </td>
-                            <td>
-                                @c
+                                @{BigDecimal(b).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%
                             </td>
                         </tr>
                     }
