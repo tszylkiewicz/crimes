@@ -19,15 +19,15 @@ class PersonSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
         macintosh.lastName.get must equal("Snow")
         macintosh.phone.get must equal("123456789")
         macintosh.email.get must equal("johnsnow@edu.p.lodz.pl")
-        macintosh.rank.get must equal("Aspirant")
+        macintosh.rank.get must equal("Constable")
       }
     }
     
     "be listed along its firstName" in {
         whenReady(personService.list()) { people =>
 
-          people.total must equal(3)
-          people.items must have length(3)
+          people.total must equal(6)
+          people.items must have length(6)
         }
     }
     

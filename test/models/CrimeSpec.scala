@@ -2,7 +2,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-class ModelSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
+class CrimeSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
   import models._
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,15 +23,15 @@ class ModelSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
       whenReady(crimeService.findById(1)) { maybeCrime =>
         val macintosh = maybeCrime.get
 
-        macintosh.description must equal("Battery")
+        macintosh.description must equal("BATTERY WITH SERIOUS INJURIES")
         macintosh.categoryId must equal(Some(1))
         macintosh.date.value must matchPattern {
-          case date:java.util.Date if dateIs(date, "1993-10-21") =>
+          case date:java.util.Date if dateIs(date, "2019-02-19") =>
         }
         macintosh.resolution must equal(Some("Arrest"))
-        macintosh.street must equal(Some("Politechniki"))
-        macintosh.city must equal(Some("Lodz"))
-        macintosh.district must equal(Some("lodzkie"))
+        macintosh.street must equal(Some("Wiejska"))
+        macintosh.city must equal(Some("Gdansk"))
+        macintosh.district must equal(Some("pomorskie"))
         macintosh.latitude must equal(Some(81.172633))
         macintosh.longitude must equal(Some(85.581219))
         macintosh.personId must equal(Some(1))
@@ -41,8 +41,8 @@ class ModelSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
     "be listed along its categories" in {
         whenReady(crimeService.list()) { crimes =>
 
-          crimes.total must equal(3)
-          crimes.items must have length(3)
+          crimes.total must equal(20)
+          crimes.items must have length(10)
         }
     }
     

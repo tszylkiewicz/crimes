@@ -27,14 +27,14 @@ class CrimeControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFu
       val result = crimeController.list(0, 2, "")(FakeRequest())
 
       status(result) must equal(OK)
-      contentAsString(result) must include("3 crimes found")
+      contentAsString(result) must include("20 crimes found")
     }
 
     "filter crimes by description" in {
-      val result = crimeController.list(0, 2, "Battery")(FakeRequest())
+      val result = crimeController.list(0, 2, "BATTERY")(FakeRequest())
 
       status(result) must equal(OK)
-      contentAsString(result) must include("3 crimes found")
+      contentAsString(result) must include("2 crimes found")
     }
 
     //running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {

@@ -16,7 +16,7 @@ class PersonControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ScalaF
       val result = personController.list(0, 2, "")(FakeRequest())
 
       status(result) must equal(OK)
-      contentAsString(result) must include("3 people found")
+      contentAsString(result) must include("6 people found")
     }
 
     "filter people by firstName" in {
