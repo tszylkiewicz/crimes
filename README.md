@@ -1,2 +1,2 @@
-# crimes
- Crimes in Scala
+# Crimes Registry
+Crimes registry for Scala course.
